@@ -64,6 +64,7 @@ export default function Home() {
           Searching for: <span id='search-term'></span>
         </p>
         <input
+          value={searchTerm}
           style={{ border: '1px solid black' }}
           onChange={(e) => handleChange(e.target.value)}
         />
