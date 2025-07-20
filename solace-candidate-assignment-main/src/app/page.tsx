@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { InferSelectModel } from 'drizzle-orm';
 import { advocates } from '@/db/schema';
@@ -9,18 +9,16 @@ type Advocate = InferSelectModel<typeof advocates>;
 
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     const fetchAdvocates = async () => {
       try {
         const response = await fetch('/api/advocates');
         if (!response.ok) throw new Error('Network response was not ok');
-
         const responseData = await response.json();
 
         setAdvocates(responseData.data);
-        setFilteredAdvocates(responseData.data);
       } catch (error) {
         console.error('Error fetching advocates:', error);
       }
@@ -29,29 +27,30 @@ export default function Home() {
     fetchAdvocates();
   }, []);
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
+  const filteredAdvocates = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return advocates;
 
-    document.getElementById('search-term').innerHTML = searchTerm;
-
-    console.log('filtering advocates...');
-    const filteredAdvocates = advocates.filter((advocate) => {
+    return advocates.filter((advocate) => {
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.firstName.toLowerCase().includes(term) ||
+        advocate.lastName.toLowerCase().includes(term) ||
+        advocate.city.toLowerCase().includes(term) ||
+        advocate.degree.toLowerCase().includes(term) ||
+        advocate.yearsOfExperience.toString().includes(term) ||
+        advocate.specialties.some((specialty) =>
+          specialty.toLowerCase().includes(term)
+        )
       );
     });
+  }, [searchTerm, advocates]);
 
-    setFilteredAdvocates(filteredAdvocates);
+  const handleChange = (value: string) => {
+    setSearchTerm(value);
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+  const handleReset = () => {
+    setSearchTerm('');
   };
 
   return (
@@ -66,9 +65,9 @@ export default function Home() {
         </p>
         <input
           style={{ border: '1px solid black' }}
-          onChange={onChange}
+          onChange={(e) => handleChange(e.target.value)}
         />
-        <button onClick={onClick}>Reset Search</button>
+        <button onClick={handleReset}>Reset Search</button>
       </div>
       <br />
       <br />
