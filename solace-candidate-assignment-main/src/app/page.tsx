@@ -10,13 +10,10 @@ type Advocate = InferSelectModel<typeof advocates>;
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAdvocates = async () => {
       try {
-        setLoading(true);
-
         const response = await fetch('/api/advocates');
         if (!response.ok) throw new Error('Network response was not ok');
 
@@ -26,8 +23,6 @@ export default function Home() {
         setFilteredAdvocates(responseData.data);
       } catch (error) {
         console.error('Error fetching advocates:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
