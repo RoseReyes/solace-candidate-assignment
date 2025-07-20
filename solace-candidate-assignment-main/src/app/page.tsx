@@ -2,18 +2,36 @@
 
 import { useEffect, useState } from 'react';
 
+import { InferSelectModel } from 'drizzle-orm';
+import { advocates } from '@/db/schema';
+
+type Advocate = InferSelectModel<typeof advocates>;
+
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [advocates, setAdvocates] = useState<Advocate[]>([]);
+  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('fetching advocates...');
-    fetch('/api/advocates').then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
-    });
+    const fetchAdvocates = async () => {
+      try {
+        setLoading(true);
+
+        const response = await fetch('/api/advocates');
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const responseData = await response.json();
+
+        setAdvocates(responseData.data);
+        setFilteredAdvocates(responseData.data);
+      } catch (error) {
+        console.error('Error fetching advocates:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAdvocates();
   }, []);
 
   const onChange = (e) => {
