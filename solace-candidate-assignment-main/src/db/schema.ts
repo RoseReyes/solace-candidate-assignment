@@ -10,8 +10,6 @@ import {
 
 import { sql } from 'drizzle-orm';
 
-type Specialty = string[];
-
 const advocates = pgTable('advocates', {
   id: serial('id').primaryKey(),
   firstName: text('first_name').notNull(),
