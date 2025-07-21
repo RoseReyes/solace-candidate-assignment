@@ -5,6 +5,14 @@
 
 2. specialties: jsonb('payload').notNull().default([]).$type<string[]>(), not sure if this is the best way to handle type unknown specifically using drizzle (not familiar with it), fixed it because the red squiggly is annoying :)
 
+# Schema Changes
+
+phoneNumber - Use text instead of bigint to preserve formatting and precision
+specialties - Rename for clarity or normalize into separate table
+createdAt - Add .notNull()
+updatedAt - Add for future auditability
+email/slug - Optional but helpful for unique identification/search
+
 # Future Enhancements
 
 1. create test files
@@ -17,6 +25,6 @@
 
 5. add auto-complete when filtering/searching terms
 
-6. access previous search results
+6. proper loading and error message display for the users
 
 7. voice search
