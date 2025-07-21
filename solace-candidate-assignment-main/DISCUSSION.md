@@ -21,10 +21,12 @@ email/slug - Optional but helpful for unique identification/search
 
 3. add another message for no yield results when filtering
 
-4. create a separate component for the header and the results table
+4. break down components (header, input, results)
 
 5. add auto-complete when filtering/searching terms
 
 6. proper loading and error message display for the users
 
 7. voice search
+
+8. add more styling to the page
