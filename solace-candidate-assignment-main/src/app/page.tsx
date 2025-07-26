@@ -21,10 +21,12 @@ const bonheurRoyale = Bonheur_Royale({
 export default function Home() {
   const [advocates, setAdvocates] = useState<Advocate[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAdvocates = async () => {
       try {
+        setLoading(true);
         const response = await fetch('/api/advocates');
         if (!response.ok) throw new Error('Network response was not ok');
         const responseData = await response.json();
@@ -32,10 +34,12 @@ export default function Home() {
         setAdvocates(responseData.data);
       } catch (error: any) {
         console.log(`Error fetching advocates: ${error.message}`);
+        setLoading(false);
       }
     };
 
     fetchAdvocates();
+    //setLoading(false);
   }, []);
 
   const filteredAdvocates = useMemo(() => {
@@ -91,50 +95,56 @@ export default function Home() {
 
       {/* Advocate Cards */}
       <section className='grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
-        {filteredAdvocates.map((advocate) => (
-          <div
-            key={advocate.phoneNumber}
-            className='bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl hover:border-blue-100 transition duration-300'>
-            {/* Header Section */}
-            <div className='flex items-center gap-4 mb-4'>
-              <div className='h-12 w-12 flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 rounded-full font-bold uppercase hover:scale-105 transition-transform'>
-                {advocate.firstName.charAt(0)}
-              </div>
-              <div>
-                <h2 className='text-lg font-semibold text-gray-800'>
-                  {advocate.firstName} {advocate.lastName}, {advocate.degree}
-                </h2>
-                <div className='text-xs text-gray-500 flex flex-col gap-1 mt-1'>
-                  <span className='flex items-center gap-1 font-bold'>
-                    <MapPinIcon className='h-4 w-4 text-green-700 font-extrabold' />
-                    {advocate.city}
-                  </span>
-                  <span className='flex items-center gap-1 font-bold'>
-                    <DevicePhoneMobileIcon className='h-4 w-4 text-indigo-700' />
-                    {advocate.phoneNumber}
-                  </span>
-                  <span className='flex items-center gap-1 font-bold'>
-                    <BriefcaseIcon className='h-4 w-4 text-cyan-700' />
-                    {advocate.yearsOfExperience} years of experience
-                  </span>
+        {!loading ? (
+          filteredAdvocates.map((advocate) => (
+            <div
+              key={advocate.phoneNumber}
+              className='bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl hover:border-blue-100 transition duration-300'>
+              {/* Header Section */}
+              <div className='flex items-center gap-4 mb-4'>
+                <div className='h-12 w-12 flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 rounded-full font-bold uppercase hover:scale-105 transition-transform'>
+                  {advocate.firstName.charAt(0)}
+                </div>
+                <div>
+                  <h2 className='text-lg font-semibold text-gray-800'>
+                    {advocate.firstName} {advocate.lastName}, {advocate.degree}
+                  </h2>
+                  <div className='text-xs text-gray-500 flex flex-col gap-1 mt-1'>
+                    <span className='flex items-center gap-1 font-bold'>
+                      <MapPinIcon className='h-4 w-4 text-green-700 font-extrabold' />
+                      {advocate.city}
+                    </span>
+                    <span className='flex items-center gap-1 font-bold'>
+                      <DevicePhoneMobileIcon className='h-4 w-4 text-indigo-700' />
+                      {advocate.phoneNumber}
+                    </span>
+                    <span className='flex items-center gap-1 font-bold'>
+                      <BriefcaseIcon className='h-4 w-4 text-cyan-700' />
+                      {advocate.yearsOfExperience} years of experience
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Body Section */}
-            <div className='text-sm text-gray-700 mb-2'>
-              <strong className='text-slate-800'>Specialties:</strong>{' '}
-              {advocate.specialties.join(', ')}
-            </div>
+              {/* Body Section */}
+              <div className='text-sm text-gray-700 mb-2'>
+                <strong className='text-slate-800'>Specialties:</strong>{' '}
+                {advocate.specialties.join(', ')}
+              </div>
 
-            {/* Optional Tag */}
-            <div className='mt-4'>
-              <span className='inline-block bg-blue-50 text-slate-700 text-xs px-2 py-1 rounded-full'>
-                Verified Advocate
-              </span>
+              {/* Optional Tag */}
+              <div className='mt-4'>
+                <span className='inline-block bg-blue-50 text-slate-700 text-xs px-2 py-1 rounded-full'>
+                  Verified Advocate
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className='p-3 items-center text-green-950'>
+            Loading advocates...
+          </p>
+        )}
       </section>
     </main>
   );
