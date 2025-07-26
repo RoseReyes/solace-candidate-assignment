@@ -31,7 +31,7 @@ export default function Home() {
 
         setAdvocates(responseData.data);
       } catch (error: any) {
-        console.error('Error fetching advocates:', error.message);
+        console.log(`Error fetching advocates: ${error.message}`);
       }
     };
 
@@ -39,18 +39,18 @@ export default function Home() {
   }, []);
 
   const filteredAdvocates = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
+    const term = searchTerm.trim().toLocaleLowerCase();
     if (!term) return advocates;
 
     return advocates.filter((advocate) => {
       return (
-        advocate.firstName.toLowerCase().includes(term) ||
+        advocate.firstName.toLocaleLowerCase().includes(term) ||
         advocate.lastName.toLowerCase().includes(term) ||
         advocate.city.toLowerCase().includes(term) ||
         advocate.degree.toLowerCase().includes(term) ||
         advocate.yearsOfExperience.toString().includes(term) ||
         advocate.specialties.some((specialty) =>
-          specialty.toLowerCase().includes(term)
+          specialty.toLocaleLowerCase().includes(term)
         )
       );
     });
