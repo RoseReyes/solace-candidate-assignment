@@ -59,7 +59,11 @@ export default function Home() {
         onSearchChange={handleChange}
         onReset={handleReset}
       />
-      <AdvocateList advocates={filteredAdvocates} />
+      {searchTerm.trim() && filteredAdvocates.length === 0 ? (
+        <p className='text-center text-gray-500 text-sm'>No results found...</p>
+      ) : (
+        <AdvocateList advocates={filteredAdvocates} />
+      )}
     </main>
   );
 }
