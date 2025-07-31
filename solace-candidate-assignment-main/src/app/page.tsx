@@ -64,6 +64,29 @@ export default function Home() {
     setSearchTerm('');
   };
 
+  const formatPhoneNumber = (phoneNumber: string) => {
+    let newString = '(';
+
+    for (let x = 0; x <= phoneNumber.length - 1; x++) {
+      newString += phoneNumber[x];
+
+      if (x === 2) {
+        newString = newString + ') ';
+      }
+
+      if (x === 5) {
+        newString = newString + '-';
+      }
+    }
+
+    return newString;
+  };
+
+  // rendering the cards - i will make the specialties clickable
+  // state variable to capture the or specialties
+  // basically passed in those words to my filtering of advocates
+  // that will trigger my filtering
+
   return (
     <main className='min-h-screen bg-gray-50 px-4 py-10 container mx-auto max-w-7xl'>
       <header className='flex flex-col sm:flex-row items-start sm:items-center justify-between bg-white/80 backdrop-blur-md border border-gray-200 p-6 rounded-xl shadow-md mb-10'>
@@ -108,7 +131,7 @@ export default function Home() {
                   </span>
                   <span className='flex items-center gap-1 font-bold'>
                     <DevicePhoneMobileIcon className='h-4 w-4 text-indigo-700' />
-                    {advocate.phoneNumber}
+                    {formatPhoneNumber(advocate.phoneNumber.toString())}
                   </span>
                   <span className='flex items-center gap-1 font-bold'>
                     <BriefcaseIcon className='h-4 w-4 text-cyan-700' />
